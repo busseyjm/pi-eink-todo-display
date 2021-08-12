@@ -4,10 +4,17 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 # Constants
+# Epaper and section dimensions
 EPAPERDISPLAY_WIDTH = 800
 EPAPERDISPLAY_HEIGHT = 480
 CALENDAR_SECTION_WIDTH = 230
 
+# List section dimensions
+LIST_LINE_H_PADDING = 20
+LIST_LINE_COUNT = 14
+LIST_COLUMN_COUNT = 2
+
+# Single day of the week section fonts
 DAY_NUMBER_FONT_SIZE = 170
 DAY_NUMBER_FONT_WEIGHT = 'Bold'
 DOW_FONT_SIZE = 40
@@ -15,10 +22,12 @@ DOW_FONT_WEIGHT = 'Bold'
 MONTH_FONT_SIZE = 28
 MONTH_FONT_WEIGHT = 'Medium'
 
+# Calendar section fonts
 CAL_DOW_FONT_SIZE = 18
 CAL_DOW_FONT_WEIGHT = 'Bold'
 CAL_DAY_NUMBER_FONT_SIZE = 18
 CAL_DAY_NUMBER_FONT_WEIGHT = 'Regular'
+
 
 # Dictionary that holds 2 letter days of the week.
 dow_dict = dict(zip(range(0,7),(calendar.weekheader(2).split(' '))))
@@ -32,11 +41,13 @@ cal = calendar.Calendar()
 # Change this to change the first day of the week on the calendar.
 cal.setfirstweekday(calendar.SUNDAY)
 
+# Coordinates of each line in the to-do list section
+list_coords = dict()
 
 def main():
-    print("Hello world!")
-    #date = dt.datetime.now()
-    date = dt.datetime(2021,8,11)
+    date = dt.datetime.now()
+    #date = dt.datetime(2021,9,25)
+    #date = dt.datetime(1111, 5, 1)
     draw_layout()
     draw_today(date)
     draw_calendar(date)
@@ -48,6 +59,10 @@ def getFont(size, weight):
 
 
 def draw_layout():
+    """
+    Draws the general layout of the display, creating lines separating
+    each section, and drawing the list lines for the to-do list
+    """
     # Vertical line separating calendar/date section from the todo list.
     draw.line(
     [
@@ -64,9 +79,33 @@ def draw_layout():
     ], 
     0, 3)
 
+    # Horizontal To-do list lines
+    # Calculate the line coordinates, based off length and padding
+    line_len = (((EPAPERDISPLAY_WIDTH - CALENDAR_SECTION_WIDTH)
+            - ((LIST_COLUMN_COUNT+1) * LIST_LINE_H_PADDING))
+            / LIST_COLUMN_COUNT)
+    list_offset_x = line_len + LIST_LINE_H_PADDING
+    list_offset_y = (EPAPERDISPLAY_HEIGHT/(LIST_LINE_COUNT+1))
+    list_origin_x = CALENDAR_SECTION_WIDTH + LIST_LINE_H_PADDING
+    list_origin_y = list_offset_y
+
+    for x in range(0,LIST_COLUMN_COUNT):
+        for y in range(0,LIST_LINE_COUNT):
+            list_coords[x,y] = (
+                (list_origin_x + x*list_offset_x),
+                (list_origin_y + y*list_offset_y)
+            )
+            draw.line(
+            [
+                list_coords[x,y],
+                (list_coords[x,y][0]+line_len, list_coords[x,y][1])
+            ], 
+            0, 1)
+ 
 
 def draw_today(date):
-    """Draws todays date onto the image in the format:
+    """
+    Draws todays date onto the image in the format:
     DAY OF THE WEEK
     DAY NUMBER
     MONTH, YEAR
@@ -105,10 +144,10 @@ def draw_today(date):
 
 
 def draw_calendar(date):
-    """ Draws the calendar section.
+    """ 
+    Draws the calendar section.
     The calendar is a 7x7 grid (including the days of the week)
     """
-    print('draw calendar')
 
     day_font = getFont(CAL_DAY_NUMBER_FONT_SIZE, CAL_DAY_NUMBER_FONT_WEIGHT)
     dow_font = getFont(CAL_DOW_FONT_SIZE, CAL_DOW_FONT_WEIGHT)
@@ -187,7 +226,7 @@ def draw_calendar(date):
                     calendar_coords[x,y],
                     montharr[(y*7)+x], 
                     font=getFont(
-                        int(CAL_DAY_NUMBER_FONT_SIZE*1.5), 
+                        int(CAL_DAY_NUMBER_FONT_SIZE*1.75), 
                         CAL_DAY_NUMBER_FONT_WEIGHT
                     ),
                     anchor='mm'
