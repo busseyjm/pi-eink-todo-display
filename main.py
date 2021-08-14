@@ -22,9 +22,9 @@ URL_FONT_WEIGHT = 'Bold'
 # Single day of the week section fonts
 DAY_NUMBER_FONT_SIZE = 170
 DAY_NUMBER_FONT_WEIGHT = 'Bold'
-DOW_FONT_SIZE = 40
+DOW_FONT_SIZE = 37
 DOW_FONT_WEIGHT = 'Bold'
-MONTH_FONT_SIZE = 28
+MONTH_FONT_SIZE = 27
 MONTH_FONT_WEIGHT = 'Medium'
 
 # Calendar section fonts
@@ -58,7 +58,7 @@ line_len = (((EPAPERDISPLAY_WIDTH - CALENDAR_SECTION_WIDTH)
 
 def main():
     date = dt.datetime.now()
-    #date = dt.datetime(2021,9,25)
+    #date = dt.datetime(2021,9,29)
     #date = dt.datetime(1111, 5, 1)
     draw_layout()
     draw_today(date)
@@ -332,7 +332,7 @@ def draw_calendar(date):
                     calendar_coords[x,y],
                     montharr[(y*7)+x], 
                     font=getFont(
-                        int(CAL_DAY_NUMBER_FONT_SIZE*1.75), 
+                        int(CAL_DAY_NUMBER_FONT_SIZE*1.50), 
                         CAL_DAY_NUMBER_FONT_WEIGHT
                     ),
                     anchor='mm'
