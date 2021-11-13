@@ -1,5 +1,6 @@
 import calendar
 import socket
+import sqlite3
 from PIL import Image, ImageDraw, ImageFont
 
 # Constants
@@ -9,7 +10,7 @@ EPAPERDISPLAY_HEIGHT = 480
 CALENDAR_SECTION_WIDTH = 210
 
 # List section dimensions
-TODO_LIST_FILE = "example.txt"
+TODO_LIST_SQLITE = "/var/www/html/resources/todolist.db"
 LIST_LINE_H_PADDING = 10
 LIST_LINE_COUNT = 14
 LIST_COLUMN_COUNT = 2
@@ -59,7 +60,7 @@ class todolist:
         self.date = date
 
     def getFont(self, size, weight):
-        return ImageFont.truetype('fonts/BitterPro-{}.ttf'.format(weight), 
+        return ImageFont.truetype('/var/www/html/resources/fonts/BitterPro-{}.ttf'.format(weight), 
                                 size)
 
     def get_image(self):
@@ -162,8 +163,20 @@ class todolist:
         """
         # Read the todo list and put it in a zipped dictionary with the
         # line starting coordinates
-        f = open(TODO_LIST_FILE,"r")
-        lines = f.readlines()
+        conn = sqlite3.connect(TODO_LIST_SQLITE)
+
+        cur = conn.cursor()
+        cur.execute("""      
+            SELECT todoitem    
+            FROM todolist_items
+            INNER JOIN listorder
+            ON todolist_items.id = listorder.item_id;""")
+        linesql = cur.fetchall()
+        lines = []
+        for row in linesql:
+            print(row[0])
+            lines.append(row[0])
+
         line_dict = dict(zip(lines, self.list_coords))
         for key in line_dict:
             too_long = False

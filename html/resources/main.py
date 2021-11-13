@@ -13,9 +13,9 @@ def main():
     #date = dt.datetime(1111, 5, 1)
     todo = todolist(date)
     image = todo.get_image()
-    #image.save("test2.bmp")
-    epd.display(epd.getbuffer(image))
-    epd7in5_V2.epdconfig.module_exit()
+    # image.save("/var/www/html/resources/test2.bmp")
+    #epd.display(epd.getbuffer(image))
+    #epd7in5_V2.epdconfig.module_exit()
 
 if __name__ == '__main__':
   main()
