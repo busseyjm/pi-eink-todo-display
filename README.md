@@ -13,35 +13,38 @@ The goal of this project is to create a common to-do list for my household, with
 ## Hardware
 * Raspberry Pi Zero-W
 * Waveshare 7.5 Inch E-Ink Display & Hat (800x480) 2 Colours
-  * Any waveshare E-Ink display will work, although the main.py script will need to be updated to use the correct imports and functions.
+  * Any waveshare E-Ink display will work, although the main.py script will need to be updated to use the correct imports and functions, and the todolist.py will need to be changed to make it draw nicely.
 
 ## Setup
 * Burn a Raspberry Pi OS image onto the storage media for your pi, typically an SD card
   * I used raspios-bullseye-armhf-lite for my raspberry pi zero w at the time of writing.
+
 * To enable wifi without a monitor:
-1. Within the raspios directory 'boot' create the following files:
-  * wpa_supplicant.conf
-  * ssh
-2. Within wpa_supplicant.conf add your wifi credentials and country code. Note that the Raspberry Pi Zero W does **NOT** have a 5ghz antenna, and **must** use 2.4ghz.
-  country=COUNTRY_CODE
-  ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-  update_config=1
+   1. Within the raspios directory 'boot' create the following files:
+       * wpa_supplicant.conf
+       * ssh
+   2. Within wpa_supplicant.conf add your wifi credentials and country code. Note that the Raspberry Pi Zero W does **NOT** have a 5ghz antenna, and **must** use 2.4ghz.
+     ```
+     country=COUNTRY_CODE
+     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+     update_config=1
 
-  network={
-      ssid="NETWORK_NAME"
-      psk="NETWORK_PASSWORD"
-      key_mgmt=WPA-PSK
-  }
+     network={
+         ssid="NETWORK_NAME"
+         psk="NETWORK_PASSWORD"
+         key_mgmt=WPA-PSK
+     }
+     ```
 
-3. Insert the SD card into the pi, plug it in and allow it time to boot.
-4. The default configuration has the username as pi, hostname as raspberrypi, and password as raspberry. Zeroconf is enabled out of the box, so you can connect via ssh to **pi@raspberrypi.local**
-5. I suggest doing the #ssh-problems changes to /etc/ssh/sshd_config as soon as possible if ssh is running slowly.
-6. Enter the raspi-config tool with __sudo raspi-config__.
-6. Change your timezone under __5. Localisation Options__
-  * Choose continent and a nearby listed city.
-7. Enable SPI under __3. Interface Options__
-8. Change the hostname and password if you wish under __1. System Options__
-9. __RESTART THE SYSTEM__ with __sudo reboot__
+   3. Insert the SD card into the pi, plug it in and allow it time to boot.
+   4. The default configuration has the username as pi, hostname as raspberrypi, and password as raspberry. Zeroconf is enabled out of the box, so you can connect via ssh to **pi@raspberrypi.local**
+   5. I suggest doing the **#ssh-problems** changes to /etc/ssh/sshd_config as soon as possible if ssh is running slowly.
+   6. Enter the raspi-config tool with __sudo raspi-config__.
+   6. Change your timezone under __5. Localisation Options__
+      * Choose continent and a nearby listed city.
+   7. Enable SPI under __3. Interface Options__
+   8. Change the hostname and password if you wish under __1. System Options__
+   9. __RESTART THE SYSTEM__ with __sudo reboot__
 
 ## Pre-installation
 * sudo apt-get update
@@ -50,7 +53,7 @@ The goal of this project is to create a common to-do list for my household, with
 * cd pi-eink-todo-display
 
 ## Installation
-* __sudo ./install.sh__
+* sudo ./install.sh
 
 ## ssh issues
 I had some trouble with ssh over wifi, with ssh dropping out pretty often. 
