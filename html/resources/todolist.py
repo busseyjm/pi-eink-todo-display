@@ -174,7 +174,6 @@ class todolist:
         linesql = cur.fetchall()
         lines = []
         for row in linesql:
-            print(row[0])
             lines.append(row[0])
 
         line_dict = dict(zip(lines, self.list_coords))

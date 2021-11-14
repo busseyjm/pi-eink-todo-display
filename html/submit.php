@@ -83,8 +83,9 @@ $interval = date_diff($now, $nextavailableupdate);
 
 //if the time to the next update is in the past, update now
 if ($interval->format('%R') == '-') {
-  //update now
-  exec("python3 /var/www/html/resources/main.py");
+  //update now (output pipes let the php script continue without waiting for the python script)
+  // this disables any errors being printed to /var/log/apache2/error.log
+  exec("python3 /var/www/html/resources/main.py >/dev/null 2>/dev/null &");
   //write t+60 to the update file to prevent refreshes for 60s
   $nowinterval = $now->add(new DateInterval('PT1M'));
   $oneminuteformatted = $nowinterval->format('Y-m-d H:i:s');
@@ -98,10 +99,8 @@ if ($interval->format('%R') == '-') {
   //make the new possible update time 1m from then
   $nextavailableupdate->add(new DateInterval('PT1M'));
   $scripttime = $nextavailableupdate->format('Y-m-d H:i:s');
-  echo "at 1m from now echo the date/time+2m into lastupdate.txt\n";
   exec("echo \"echo $scripttime > /var/www/html/resources/lastupdate.txt\" | at now + 1 minute");
-  //prevent updates during the timeframe an update is scheduled
-  echo "write SCHEDULED to lastupdate\n";
+  //prevent updates during the timeframe, an update is scheduled
   exec("echo 'SCHEDULED' > /var/www/html/resources/lastupdate.txt");
 }
 

@@ -9,13 +9,12 @@ def main():
     epd.Clear()
 
     date = dt.datetime.now()
-    #date = dt.datetime(2021,9,29)
-    #date = dt.datetime(1111, 5, 1)
     todo = todolist(date)
     image = todo.get_image()
-    # image.save("/var/www/html/resources/test2.bmp")
-    #epd.display(epd.getbuffer(image))
-    #epd7in5_V2.epdconfig.module_exit()
+    #rotate the image 180 degrees (if needed for wiring etc)
+    image = image.rotate(180)
+    epd.display(epd.getbuffer(image))
+    epd7in5_V2.epdconfig.module_exit()
 
 if __name__ == '__main__':
   main()
